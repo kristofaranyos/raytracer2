@@ -24,7 +24,7 @@
 int main() {
 	try {
 		//debug options, default = false
-		const bool ONE_PIC_MODE = true;
+		const bool ONE_PIC_MODE = false;
 		const bool SIMPLE_LIGHTING = true;
 
 		//output parameters
@@ -33,7 +33,7 @@ int main() {
 		const uint32_t SCREEN_WIDTH = 1920;
 		const uint32_t SCREEN_HEIGHT = 1080;
 
-		Camera camera(Vector3f(0, 10, 0), Vector3f(9, 11, -33), Vector3f(0, 1, 0), Vector2i(SCREEN_WIDTH, SCREEN_HEIGHT));
+		Camera camera(Vector3f(0, 10, 0), Vector3f(0, 0, -25), Vector3f(0, 1, 0), Vector2i(SCREEN_WIDTH, SCREEN_HEIGHT));
 		Scene scene(Vector3f(0.5, 0.7, 1));
 
 		scene.addObject(new Sphere(Vector3f(-20, 2, -31), 2, new Material(Vector3f(0.2, 0.3, 0.9), Vector3f(0.6, 0.3, 0.2), 50))); //kek
@@ -45,7 +45,7 @@ int main() {
 		float boxSize = 50;
 
 		Material *whiteWall = new Material(Vector3f(0.8, 0.8, 0.8), Vector3f(0.3, 0.1, 0), 40);
-
+/*
 		scene.addObject(new BoundedPlane(Vector3f(boxSize / 2, boxSize, 0), Vector3f(-boxSize, 0, 0), Vector3f(0, 0, -boxSize), whiteWall)); //teteje
 		scene.addObject(new BoundedPlane(Vector3f(-boxSize / 2, 0, 0), Vector3f(boxSize, 0, 0), Vector3f(0, 0, -boxSize), whiteWall)); //alja
 
@@ -54,6 +54,7 @@ int main() {
 
 		scene.addObject(new BoundedPlane(Vector3f(-boxSize / 2, 0, 0), Vector3f(0, 0, -boxSize), Vector3f(0, boxSize, 0), new Material(Vector3f(1, 0, 0), Vector3f(0.3, 0.1, 0), 40))); //bal
 		scene.addObject(new BoundedPlane(Vector3f(boxSize / 2, 0, 0), Vector3f(0, boxSize, 0), Vector3f(0, 0, -boxSize), new Material(Vector3f(0, 1, 0), Vector3f(0.3, 0.1, 0), 40))); //jobb
+*/
 
 
 		scene.addLight(new Light(Vector3f(0, 40, -35), 1.8)); //felso
@@ -70,21 +71,11 @@ int main() {
 		for (int i = 0; i < (ONE_PIC_MODE ? 1 : iterations); ++i) {
 			float t = i * dt;
 			//update camera and scene
-			//scene.getLight(0)->setPosition(scene.getLight(0)->getPosition() +\
-										   Vector3f(sin(t / 2000.f * 2.f * M_PI) * 40, cos(t / 2000.f * 2.f * M_PI) * 40,\
-												 1));
-			//scene.getLight(2)->setPosition(scene.getLight(2)->getPosition() +\
-										   Vector3f(sin(t / 4000.f * 2.f * M_PI) * 20, 1,\
-												 cos(t / 4000.f * 2.f * M_PI) * 20));
-
 			//scene.getObject(1)->setPosition(Vector3f(-1, 3, -20) + Vector3f(sin(t / 6000.f * 2.f * M_PI) * 20, sin(t / 3000.f * 2.f * M_PI) * 5, cos(t / 6000.f * 2.f * M_PI) * 20));
 
-			//camera.setEyePos(Vector3f(0, 0, 2 * t / iterations));
-			//render
 			float angle = (float)i / iterations * M_PI / 2 + M_PI / 4.f;
-			float x = cosf(angle);
-			float z = -sinf(angle);
-			camera.setCenterPos(Vector3f(x, 10, z));
+			camera.setCenterPos(Vector3f(sinf(angle) * 25, 10, cosf(angle) * 25 - 25));
+			//render
 			raytracer.render();
 
 		}

@@ -38,16 +38,17 @@ Vector2i Camera::getResolution() const {
 }
 
 Matrix3f Camera::getViewMatrix() const {
-	Vector3f upNorm = Vector3f(up).normalize();
-	Vector3f lookAtNorm = (eye - center).normalize();
-	Vector3f rightNorm = cross(upNorm, lookAtNorm).normalize();
+	Vector3f tempNorm = Vector3f(up).normalize();
+	Vector3f lookAtNorm = (center - eye).normalize();
+	Vector3f rightNorm = cross(tempNorm, lookAtNorm).normalize();
+	Vector3f upNorm = cross(lookAtNorm, rightNorm).normalize();
 
+	//return transpose of viewmatrix (orthogonal => transpose = inverse)
 	Matrix3f temp{
-		Vector3f(rightNorm.x, upNorm.x, lookAtNorm.x),
-		Vector3f(rightNorm.y, upNorm.y, lookAtNorm.y),
-		Vector3f(rightNorm.z, upNorm.z, lookAtNorm.z)
+		Vector3f(rightNorm.x, rightNorm.y, rightNorm.z),
+		Vector3f(upNorm.x, upNorm.y, upNorm.z),
+		Vector3f(lookAtNorm.x, lookAtNorm.y, lookAtNorm.z)
 	};
-
 
 	return temp;
 }

@@ -70,21 +70,23 @@ void Raytracer::render() {
 
 	std::vector<Vector3f> frameBuffer(camera.getResolution().x * camera.getResolution().y);
 
+	
 	#pragma omp parallel for
 	for (size_t j = 0; j < camera.getResolution().y; j++) {
 		for (size_t i = 0; i < camera.getResolution().x; i++) {
 			float x = (2 * (i + 0.5) / (float) camera.getResolution().x - 1) * tan(fov / 2.) * camera.getResolution().x / (float)camera.getResolution().y;
 			float y = -(2 * (j + 0.5) / (float) camera.getResolution().y - 1) * tan(fov / 2.);
-			Vector3f temp = Vector3f(x, y, -1).normalize();
+			Vector3f temp = Vector3f(-x, y, 1).normalize();
 
-			Matrix3f viewMatrix = Matrix3f().inverse(camera.getViewMatrix());
+			Matrix3f viewMatrix = camera.getViewMatrix();
 			Vector3f dir = viewMatrix.mul(temp);
 
 			frameBuffer[i + j * camera.getResolution().x] = castRay(camera.getEye(), dir);
 		}
 	}
+ 
 
-	std::ofstream ofs; // save the framebuffer to file
+	std::ofstream ofs;
 	ofs.open("../output/test" + std::to_string(iteration) + ".ppm");
 	ofs << "P6\n" << camera.getResolution().x << " " << camera.getResolution().y << "\n255\n";
 	for (size_t i = 0; i < camera.getResolution().x * camera.getResolution().y; ++i) {

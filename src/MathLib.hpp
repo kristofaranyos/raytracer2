@@ -95,6 +95,13 @@ struct vec<4, T> {
 		return i <= 0 ? x : (1 == i ? y : (2 == i ? z : w));
 	}
 
+	float norm() { return std::sqrt(x * x + y * y + z * z + w * w); }
+
+	vec<4, T> &normalize(T l = 1) {
+		*this = (*this) * (l / norm());
+		return *this;
+	}
+
 	T x, y, z, w;
 };
 
@@ -165,7 +172,7 @@ private:
 
 template<typename T>
 struct mat<3, T> {
-	mat() : x(vec<3, T>(1, 0, 0)), y(vec<3, T>(0, 1, 0)), z(vec<3, T>(0, 1, 0)) {}
+	mat() : x(vec<3, T>(1, 0, 0)), y(vec<3, T>(0, 1, 0)), z(vec<3, T>(0, 0, 1)) {}
 
 	mat(vec<3, T> X, vec<3, T> Y, vec<3, T> Z) : x(X), y(Y), z(Z) {}
 
@@ -216,7 +223,63 @@ struct mat<3, T> {
 	vec<3, T> x, y, z;
 };
 
+
+template<typename T>
+struct mat<4, T> {
+	mat() : x(vec<4, T>(1, 0, 0, 0)), y(vec<4, T>(0, 1, 0, 0)), z(vec<4, T>(0, 0, 1, 0)), w(vec<4, T>(0, 0, 0, 1)) {}
+
+	mat(vec<4, T> X, vec<4, T> Y, vec<4, T> Z, vec<4, T> W) : x(X), y(Y), z(Z), w(W) {}
+
+	vec<4, T> &operator[](const size_t i) {
+		assert(i < 3);
+		return i <= 0 ? x : (1 == i ? y : z);
+	}
+
+	const vec<4, T> &operator[](const size_t i) const {
+		assert(i < 3);
+		return i <= 0 ? x : (1 == i ? y : z);
+	}
+
+	Vector4f mul(const Vector4f& v) const {
+		return {
+				x[0] * v[0] + x[1] * v[1] + x[2] * v[2] + x[3] * v[3],
+				y[0] * v[0] + y[1] * v[1] + y[2] * v[2] + y[3] * v[3],
+				z[0] * v[0] + z[1] * v[1] + z[2] * v[2] + z[3] * v[3],
+				w[0] * v[0] + w[1] * v[1] + w[2] * v[2] + w[3] * v[3]
+		};
+	}
+
+	float operator()(int i, int j) const {
+		Vector3f temp = i <= 0 ? x : (1 == i ? y : z);
+		return temp[j];
+	}
+
+	mat<3, float> inverse(const mat<3, float> &m) const {
+		double det = m(0, 0) * (m(1, 1) * m(2, 2) - m(2, 1) * m(1, 2)) -
+					 m(0, 1) * (m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0)) +
+					 m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0));
+
+		double invdet = 1 / det;
+
+		mat<3, float> minv; // inverse of matrix m
+		minv.x[0] = (m(1, 1) * m(2, 2) - m(2, 1) * m(1, 2)) * invdet;
+		minv.x[1] = (m(0, 2) * m(2, 1) - m(0, 1) * m(2, 2)) * invdet;
+		minv.x[2] = (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * invdet;
+		minv.y[0] = (m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2)) * invdet;
+		minv.y[1] = (m(0, 0) * m(2, 2) - m(0, 2) * m(2, 0)) * invdet;
+		minv.y[2] = (m(1, 0) * m(0, 2) - m(0, 0) * m(1, 2)) * invdet;
+		minv.z[0] = (m(1, 0) * m(2, 1) - m(2, 0) * m(1, 1)) * invdet;
+		minv.z[1] = (m(2, 0) * m(0, 1) - m(0, 0) * m(2, 1)) * invdet;
+		minv.z[2] = (m(0, 0) * m(1, 1) - m(1, 0) * m(0, 1)) * invdet;
+
+		return minv;
+	}
+
+	vec<4, T> x, y, z, w;
+};
+
 typedef mat<3, float> Matrix3f;
+typedef mat<4, float> Matrix4f;
 
 
 #endif //RAYTRACER1_GEOMETRY_HPP
