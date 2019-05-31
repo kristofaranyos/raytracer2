@@ -39,7 +39,7 @@ Vector2i Camera::getResolution() const {
 
 Matrix3f Camera::getViewMatrix() const {
 	Vector3f tempNorm = Vector3f(up).normalize();
-	Vector3f lookAtNorm = (center - eye).normalize();
+	Vector3f lookAtNorm = (eye - center).normalize();
 	Vector3f rightNorm = cross(tempNorm, lookAtNorm).normalize();
 	Vector3f upNorm = cross(lookAtNorm, rightNorm).normalize();
 

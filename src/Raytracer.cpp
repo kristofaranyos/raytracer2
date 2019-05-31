@@ -76,7 +76,7 @@ void Raytracer::render() {
 		for (size_t i = 0; i < camera.getResolution().x; i++) {
 			float x = (2 * (i + 0.5) / (float) camera.getResolution().x - 1) * tan(fov / 2.) * camera.getResolution().x / (float)camera.getResolution().y;
 			float y = -(2 * (j + 0.5) / (float) camera.getResolution().y - 1) * tan(fov / 2.);
-			Vector3f temp = Vector3f(-x, y, 1).normalize();
+			Vector3f temp = Vector3f(x, y, -1).normalize();
 
 			Matrix3f viewMatrix = camera.getViewMatrix();
 			Vector3f dir = viewMatrix.mul(temp);
