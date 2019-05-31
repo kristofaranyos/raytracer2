@@ -44,11 +44,9 @@ Matrix3f Camera::getViewMatrix() const {
 	Vector3f upNorm = cross(lookAtNorm, rightNorm).normalize();
 
 	//return transpose of viewmatrix (orthogonal => transpose = inverse)
-	Matrix3f temp{
+	return {
 		Vector3f(rightNorm.x, rightNorm.y, rightNorm.z),
 		Vector3f(upNorm.x, upNorm.y, upNorm.z),
 		Vector3f(lookAtNorm.x, lookAtNorm.y, lookAtNorm.z)
 	};
-
-	return temp;
 }

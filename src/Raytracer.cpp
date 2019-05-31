@@ -5,7 +5,8 @@
 #include "Raytracer.hpp"
 #include <limits>
 
-Raytracer::Raytracer(const Camera &c, const Scene &s, bool b) : camera(c), scene(s), simplified(b), iteration(0), totalTime(0) {}
+Raytracer::Raytracer(const Camera &c, const Scene &s, bool b, int m)
+		: camera(c), scene(s), simplified(b), maxDepth(m), iteration(0), totalTime(0) {}
 
 Vector3f Raytracer::reflect(const Vector3f &I, const Vector3f &N) {
 	return I - N * 2.f * (I * N);
@@ -84,7 +85,7 @@ void Raytracer::render() {
 			frameBuffer[i + j * camera.getResolution().x] = castRay(camera.getEye(), dir);
 		}
 	}
- 
+
 
 	std::ofstream ofs;
 	ofs.open("../output/test" + std::to_string(iteration) + ".ppm");
