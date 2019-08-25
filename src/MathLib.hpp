@@ -188,9 +188,9 @@ struct mat<3, T> {
 
 	Vector3f mul(const Vector3f& v) const {
 		return {
-				x[0] * v[0] + x[1] * v[1] + x[2] * v[2],
-				y[0] * v[0] + y[1] * v[1] + y[2] * v[2],
-				z[0] * v[0] + z[1] * v[1] + z[2] * v[2]
+				x.x * v.x + x.y * v.y + x.z * v.z,
+				y.x * v.x + y.y * v.y + y.z * v.z,
+				z.x * v.x + z.y * v.y + z.z * v.z
 		};
 	}
 
